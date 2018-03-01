@@ -1,0 +1,14 @@
+<Local_Env_Config>
+<Javac_Option>
+<ClassPaths/>
+<localJavaHomePath>C:\JavaCardKit\JDK</localJavaHomePath>
+<_Source>1.5</_Source>
+<_Target>1.5</_Target>
+<_Encoding>GBK</_Encoding>
+<_InheritClassPath>1</_InheritClassPath>
+<_GenAllDegugInfo>1</_GenAllDegugInfo>
+<_GenNoWarnings>0</_GenNoWarnings>
+<_OutputAboutCompilerDoing>0</_OutputAboutCompilerDoing>
+<_OutputWhereDeprecatedApisAre>1</_OutputWhereDeprecatedApisAre>
+</Javac_Option>
+</Local_Env_Config>

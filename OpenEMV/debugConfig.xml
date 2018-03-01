@@ -1,0 +1,11 @@
+<JavaCardProject name="">
+<USER>
+<PKG name="openemv" aid="45 4D 56 00 00" major="0" minor="0">
+<APPLET aid="45 4D 56 00 00 01" instanceaid="" parameter="" authority="" privileges="" index="-9584" name="SimpleEMVApplet"/>
+</PKG>
+<Libs/>
+</USER>
+<DebugInfo>
+<Protocol name="T0"/>
+</DebugInfo>
+</JavaCardProject>

@@ -1,0 +1,15 @@
+<Local_Env_Config>
+<JCKit_Option>
+<ClassPaths/>
+<localJcHomePath>C:\JavaCardKit\JCDK</localJcHomePath>
+<_OutPutRootDir/>
+<OutType>EXP JCA CAP</OutType>
+<_InheritClassPath>1</_InheritClassPath>
+<_verbos>0</_verbos>
+<_nowarn>0</_nowarn>
+<_debug>1</_debug>
+<_nobanner>0</_nobanner>
+<_noverify>0</_noverify>
+<_mask>0</_mask>
+</JCKit_Option>
+</Local_Env_Config>
