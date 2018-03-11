@@ -1,7 +1,6 @@
 # JavaCard Template project with Gradle
 
-[![Build Status](https://travis-ci.org/ph4r05/javacard-gradle-template.svg?branch=master)](https://travis-ci.org/ph4r05/javacard-gradle-template)
-
+[![Build Status](https://travis-ci.org/nirajkalra/OpenEMV.svg?branch=master)](https://travis-ci.org/nirajkalra/OpenEMV)
 This is simple JavaCard project template using Gradle build system.
 
 You can develop your JavaCard applets and build cap files with the Gradle!
@@ -32,7 +31,7 @@ Running in IntelliJ Idea gives you a nice benefit: *Coverage*!
 - Clone this template repository:
 
 ```
-git clone --recursive https://github.com/ph4r05/javacard-gradle-template.git
+git clone --recursive https://github.com/crocs-muni/javacard-gradle-template-edu.git
 ```
 
 - Implement your applet in the `applet` module.

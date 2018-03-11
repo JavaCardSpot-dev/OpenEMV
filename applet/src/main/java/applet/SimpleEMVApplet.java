@@ -201,8 +201,8 @@ public class SimpleEMVApplet extends Applet implements EMVConstants {
 	 * The usage of GET DATA in this implementation is limited to the ATC,
 	 * the PIN Try Counter, and the last online ATC.
 	 */
-	 //ÓÃÓÚ¼ìË÷µ±Ç°µÄÓ¦ÓÃ³ÌĞòÖĞÃ»ÓĞ±»·â×°µ½¼ÇÂ¼ÖĞµÄÔ­Ê¼Êı¾İ¶ÔÏó¡¡¡¡
-	 //GET DATA µÄÊµÏÖÈ¡¾öÓÚATC¡¢ PIN³¢ÊÔ´ÎÊı¡¢ºÍ×îºóÔÚÏßµÄATC¡£
+	 //ç”¨äºæ£€ç´¢å½“å‰çš„åº”ç”¨ç¨‹åºä¸­æ²¡æœ‰è¢«å°è£…åˆ°è®°å½•ä¸­çš„åŸå§‹æ•°æ®å¯¹è±¡ã€€ã€€
+	 //GET DATA çš„å®ç°å–å†³äºATCã€ PINå°è¯•æ¬¡æ•°ã€å’Œæœ€ååœ¨çº¿çš„ATCã€‚
 	private void getData(APDU apdu, byte[] apduBuffer) {
 		/*
 		 * buffer[OFFSET_P1..OFFSET_P2] should contains of the following tags
