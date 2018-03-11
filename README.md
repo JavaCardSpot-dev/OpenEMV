@@ -1,3 +1,5 @@
+ℹ️ IMPORTANT: This repository is used for class PV204 Security Technologies at Masaryk University. All meaningful improvements will be attempted to be pushed to upstream repository in June 2018
+
 # JavaCard Template project with Gradle
 
 [![Build Status](https://travis-ci.org/JavaCardSpot-dev/OpenEMV.svg?branch=master)](https://travis-ci.org/JavaCardSpot-dev/OpenEMV)
