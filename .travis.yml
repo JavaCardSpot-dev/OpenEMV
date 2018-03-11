@@ -6,6 +6,9 @@ jdk:
 before_script: 
   - chmod +x gradlew
   
+before_install: 
+  - chmod +x gradlew  
+  
 script:
   - ./gradlew check --info
   - ./gradlew buildJavaCard --info
