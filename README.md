@@ -1,8 +1,20 @@
 ℹ️ IMPORTANT: This repository is used for class PV204 Security Technologies at Masaryk University. All meaningful improvements will be attempted to be pushed to upstream repository in June 2018
 
-# JavaCard Template project with Gradle
-
 [![Build Status](https://travis-ci.org/JavaCardSpot-dev/OpenEMV.svg?branch=master)](https://travis-ci.org/JavaCardSpot-dev/OpenEMV)
+
+# OpenEMV
+The OpenEMV is a Java Card implementation of the EMV standard. 
+
+# License 
+=======
+The source code is released under LGPL and is free.
+
+# Building
+===========
+Using [JCIDE](http://javacardos.com/javacardforum/viewtopic.php?f=26&t=43?ws=github&prj=OpenEMV) open this project,  Click "Buid All Packages(F7)" to build the source code.
+
+
+# JavaCard Template project with Gradle
 
 You can develop your JavaCard applets and build cap files with the Gradle!
 Moreover the project template enables you to test the applet with [JCardSim] or on the physical cards.
