@@ -6,16 +6,13 @@
 The OpenEMV is a Java Card implementation of the EMV standard. 
 
 # License 
-=======
 The source code is released under LGPL and is free.
 
 # Building
-===========
 Using [JCIDE](http://javacardos.com/javacardforum/viewtopic.php?f=26&t=43?ws=github&prj=OpenEMV) open this project,  Click "Buid All Packages(F7)" to build the source code.
 
 
 # JavaCard Template project with Gradle
-
 You can develop your JavaCard applets and build cap files with the Gradle!
 Moreover the project template enables you to test the applet with [JCardSim] or on the physical cards.
 
