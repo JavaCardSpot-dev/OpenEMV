@@ -2,178 +2,79 @@
 
 [![Build Status](https://travis-ci.org/JavaCardSpot-dev/OpenEMV.svg?branch=master)](https://travis-ci.org/JavaCardSpot-dev/OpenEMV)
 
-# OpenEMV
+# OpenEMV Introduction
 The OpenEMV is a Java Card implementation of the EMV standard. 
+(a) Project has a very basic EMV applet supporting only SDA and plaintext offline PIN.
+(b) It does not offer personalisation support - everything is hard-coded.
+(c) The code is optimised for readability, and not for performance or memory use.
+(d) SimpleEMVApplet class does the central processing of APDUs. 
+(e) handling of all crypto-related stuff is outsourced to java class EMVCrypro
+(f) handling of the static card data to the java class EMVStaticData
+(g) handling of the EMV protocol and session state to java class EMVProtocolState
 
-# License 
-The source code is released under LGPL and is free.
+# Contents of the repository
+(a)	applet/src/main/java/applet: Contains the requisite five files source code files :  SimpleEMVApplet.java, EMVStaticData.java
+, EMVProtocolState.java, EMVCrypto.java, EMVConstants.java
+(b) libs-sdks: Provides Sun/Oracle JavaCard SDK binaries
+(c) applet/build.gradle. Buildscript configuration for the javacard-gradle plugin
+
+# Description of Java classes
+SimpleEMVApplet.java
+ A very basic EMV applet supporting only SDA and plaintext offline PIN.
+ This applet does not offer personalisation support - everything is hard-coded.
+ The code is optimised for readability, and not for performance or memory use.
+ This class does the central processing of APDUs. Handling of all crypto-related
+ stuff is outsourced to EMVCrypro, handling of the static card data to EMVStaticData and handling of the EMV protocol and session state to EMVProtocolState.
+
+
+EMVConstants.java
+  EMVConstants defines a constants used in the EMV standard and 
+  constants specific to this implementation. It extends ISO7816
+  as some ISO7816 constants are also used by EMV.
+ 
+EMVStaticData.java
+ Class to record all the static data of an EMV applet, ie. the card details that
+ do not change over time (such as PAN, expiry date, etc.), with the exception
+ of the cryptographic keys.
+ This static data is organised in the simplest possible way, using some public byte
+ arrays to record exact APDUs that the card has to produce.
+ This class does not offer personalisation support - everything is hard-coded.
+  
+EMVProtocolState.java
+ Class to track the transient - ie. "session" - state of the EMV protocol,
+ as well as the persistent state.
+ 
+ This implementation is not secure in that it allows the ATC to overflow.
+ Also, it does not offer any support for blocking the card.
+ 
+EMVCrypto.java
+ An object of this class is responsible for all crypto-related stuff.
+ It provides methods for computing Applications Cryptograms and
+ contains all the cryptographic keys needed for this.
+ One  design choice is whether the client passes the ATC (and maybe other data)
+ explicitly as parameters, or whether this object obtain them from the applet as needed.
+ We go for the latter approach. The former leads to a 'cleaner' interface, but with many
+ more parameters.
+ 
+
+# Usage
+There are two ways to use this project.
+(a) Use pyApduTool to Download this OpenEMV CAP file to card and install it, select the applet and send APDU to card.
+(b) Project can be build in Netbeans as well in JCIDE project directly to view and edit the source code.
+
+# Testing
+
+***********************************************************************************************
+APDU packet for Testing Response from Applet
+
+00 A4 04 00 00
+
+response = 6F258407A0000000048002A51A500E536563757265436F6465204175748701005F2D046E6C656E
+***********************************************************************************************
 
 # Building
 Using [JCIDE](http://javacardos.com/javacardforum/viewtopic.php?f=26&t=43?ws=github&prj=OpenEMV) open this project,  Click "Buid All Packages(F7)" to build the source code.
 
-
-# JavaCard Template project with Gradle
-You can develop your JavaCard applets and build cap files with the Gradle!
-Moreover the project template enables you to test the applet with [JCardSim] or on the physical cards.
-
-Gradle project contains one module:
-
-- `applet`: contains the javacard applet. Can be used both for testing and building CAP
-
-Features:
- - Gradle build (CLI / IntelliJ Idea)
- - Build CAP for applets
- - Test applet code in [JCardSim] / physical cards
- - IntelliJ Idea: Coverage
- - Travis support 
-
-### Template
-
-The template contains simple Hello World applet generating random bytes on any APDU message received.
-There is also implemented very simple test that sends static APDU command to this applet - in JCardSim.
-
-The Gradle project can be opened and run in the IntelliJ Idea.
-
-Running in IntelliJ Idea gives you a nice benefit: *Coverage*!
-
-## How to use
-
-- Clone this template repository:
-
-```
-git clone --recursive https://github.com/crocs-muni/javacard-gradle-template-edu.git
-```
-
-- Implement your applet in the `applet` module.
-
-- Run Gradle wrapper `./gradlew` on Unix-like system or `./gradlew.bat` on Windows
-to build the project for the first time (Gradle will be downloaded if not installed).
-
-## Building cap
-
-- Setup your Applet ID (`AID`) in the `./applet/build.gradle`.
-
-- Run the `buildJavaCard` task:
-
-```
-./gradlew buildJavaCard  --info --rerun-tasks
-```
-
-Generates a new cap file `./applet/out/cap/applet.cap`
-
-Note: `--rerun-tasks` is to force re-run the task even though the cached input/output seems to be up to date.
-
-Typical output:
-
-```
-[ant:cap] [ INFO: ] Converter [v3.0.5]
-[ant:cap] [ INFO: ]     Copyright (c) 1998, 2015, Oracle and/or its affiliates. All rights reserved.
-[ant:cap]     
-[ant:cap]     
-[ant:cap] [ INFO: ] conversion completed with 0 errors and 0 warnings.
-[ant:verify] XII 10, 2017 10:45:05 ODP.  
-[ant:verify] INFO: Verifier [v3.0.5]
-[ant:verify] XII 10, 2017 10:45:05 ODP.  
-[ant:verify] INFO:     Copyright (c) 1998, 2015, Oracle and/or its affiliates. All rights reserved.
-[ant:verify]     
-[ant:verify]     
-[ant:verify] XII 10, 2017 10:45:05 ODP.  
-[ant:verify] INFO: Verifying CAP file /Users/dusanklinec/workspace/jcard/applet/out/cap/applet.cap
-[ant:verify] javacard/framework/Applet
-[ant:verify] XII 10, 2017 10:45:05 ODP.  
-[ant:verify] INFO: Verification completed with 0 warnings and 0 errors.
-```
-
-## Running tests
-
-```
-./gradlew test --info --rerun-tasks
-```
-
-Output:
-
-```
-Running test: Test method hello(AppletTest)
-
-Gradle suite > Gradle test > AppletTest.hello STANDARD_OUT
-    Connecting to card... Done.
-    --> [00C00000080000000000000000] 13
-    <-- 51373E8B6FDEC284DB569204CA13D2CAA23BD1D85DCAB02A0E3D50461E73F1BB 9000 (32)
-    ResponseAPDU: 34 bytes, SW=9000
-```
-
-## Dependencies
-
-This project uses mainly:
-
-- https://github.com/bertrandmartel/javacard-gradle-plugin
-- https://github.com/martinpaljak/ant-javacard
-- https://github.com/martinpaljak/oracle_javacard_sdks
-- https://github.com/licel/jcardsim
-- Petr Svenda scripts 
-
-Big kudos for a great work!
-
-### JavaCard support
-
-Thanks to Martin Paljak's [ant-javacard] and [oracle_javacard_sdks] we support:
-
-- JavaCard 2.1.2
-- JavaCard 2.2.1
-- JavaCard 2.2.2
-- JavaCard 3.0.3
-- JavaCard 3.0.4
-- JavaCard 3.0.5u1
-
-## Coverage
-
-This is a nice benefit of the IntelliJ Idea - gives you coverage 
-results out of the box. 
-
-You can see the test coverage on your applet code.
-
-- Go to Gradle plugin in IntelliJ Idea
-- Tasks -> verification -> test
-- Right click - run with coverage.
-
-Coverage summary:
-![coverage summary](https://raw.githubusercontent.com/ph4r05/javacard-gradle-template/master/.github/image/coverage_summary.png)
-
-Coverage code:
-![coverage code](https://raw.githubusercontent.com/ph4r05/javacard-gradle-template/master/.github/image/coverage_class.png)
-
-## Troubleshooting
-
-If you experience the following error: 
-
-```
-java.lang.VerifyError: Expecting a stackmap frame at branch target 19
-    Exception Details:
-      Location:
-        javacard/framework/APDU.<init>(Z)V @11: ifeq
-      Reason:
-        Expected stackmap frame at this location.
-```
-
-Then try running JVM with `-noverify` option.
-
-In the IntelliJ Idea this can be configured in the top tool bar
-with run configurations combo box -> click -> Edit Configurations -> VM Options.
-
-## Roadmap
-
-TODOs for this project:
-
-- Polish Gradle build scripts
-- Add basic libraries as maven dependency.
-
-## Contributions
-
-Community feedback is highly appreciated - pull requests are welcome!
-
-
-
-[JCardSim]: https://jcardsim.org/
-[ant-javacard]: https://github.com/martinpaljak/ant-javacard
-[oracle_javacard_sdks]: https://github.com/martinpaljak/oracle_javacard_sdks
+# License 
+The source code is released under LGPL and is free.
 
