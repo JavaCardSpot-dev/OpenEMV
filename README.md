@@ -2,27 +2,25 @@
 
 [![Build Status](https://travis-ci.org/JavaCardSpot-dev/OpenEMV.svg?branch=master)](https://travis-ci.org/JavaCardSpot-dev/OpenEMV)
 
+# (Original source link : https://github.com/JavaCardOS/OpenEMV)
+
 # OpenEMV Introduction
 
 The OpenEMV is a Java Card implementation of the EMV standard. 
 
-(a) Project has a very basic EMV applet supporting only SDA and plaintext offline PIN.
+(a) Project has a very basic Europay, MasterCard, Visa (EMV) applet supporting only Static Data Authentication (SDA) and plaintext offline PIN. It does not offer personalisation support. PIN and other relevent requisites are Hard-coded in the project.
 
-(b) It does not offer personalisation support - everything is hard-coded.
+(b) SimpleEMVApplet class does the central processing of APDUs. 
 
-(c) The code is optimised for readability, and not for performance or memory use.
+(c) Handling of all crypto-related stuff is outsourced to java class EMVCrypro
 
-(d) SimpleEMVApplet class does the central processing of APDUs. 
+(d) Handling of the static card data to the java class EMVStaticData
 
-(e) handling of all crypto-related stuff is outsourced to java class EMVCrypro
-
-(f) handling of the static card data to the java class EMVStaticData
-
-(g) handling of the EMV protocol and session state to java class EMVProtocolState
+(e) Handling of the EMV protocol and session state to java class EMVProtocolState
 
 # Contents of the repository
 
-(a)	applet/src/main/java/applet: Contains the requisite five files source code files :  SimpleEMVApplet.java, EMVStaticData.java
+(a)	applet/src/main/java/applet: Contains the requisite five files source code files: SimpleEMVApplet.java, EMVStaticData.java
 , EMVProtocolState.java, EMVCrypto.java, EMVConstants.java
 
 (b) libs-sdks: Provides Sun/Oracle JavaCard SDK binaries
@@ -32,45 +30,47 @@ The OpenEMV is a Java Card implementation of the EMV standard.
 # Description of Java classes
 SimpleEMVApplet.java
  
- A very basic EMV applet supporting only SDA and plaintext offline PIN.
- This applet does not offer personalisation support - everything is hard-coded.
- The code is optimised for readability, and not for performance or memory use.
- This class does the central processing of APDUs. Handling of all crypto-related
- stuff is outsourced to EMVCrypro, handling of the static card data to EMVStaticData and handling of the EMV protocol and session state to EMVProtocolState.
-
+ Basic EMV applet supporting only SDA and plaintext offline PIN. 
 
 EMVConstants.java
   
-  EMVConstants defines a constants used in the EMV standard and 
-  constants specific to this implementation. It extends ISO7816
+  EMVConstants defines a constants used in the EMV standard and constants specific to this implementation. It extends ISO7816
   as some ISO7816 constants are also used by EMV.
  
 EMVStaticData.java
  
- Class to record all the static data of an EMV applet, ie. the card details that
- do not change over time (such as PAN, expiry date, etc.), with the exception
- of the cryptographic keys.
- This static data is organised in the simplest possible way, using some public byte
- arrays to record exact APDUs that the card has to produce.
- This class does not offer personalisation support - everything is hard-coded.
+ Class to record all the static data of an EMV applet ie. the card details that do not change over time (such as PAN, expiry date, etc.), with the exception of the cryptographic keys.
   
 EMVProtocolState.java
  
- Class to track the transient - ie. "session" - state of the EMV protocol,
- as well as the persistent state.
- This implementation is not secure in that it allows the ATC to overflow.
- Also, it does not offer any support for blocking the card.
+ Class to track the transient - ie. "session" - state of the EMV protocol, as well as the persistent state. 
  
 EMVCrypto.java
 
- An object of this class is responsible for all crypto-related stuff.
- It provides methods for computing Applications Cryptograms and
- contains all the cryptographic keys needed for this.
- One  design choice is whether the client passes the ATC (and maybe other data)
- explicitly as parameters, or whether this object obtain them from the applet as needed.
- We go for the latter approach. The former leads to a 'cleaner' interface, but with many
- more parameters.
+ An object of this class is responsible for all crypto-related stuff. It provides methods for computing Applications Cryptograms and
+ contains all the cryptographic keys needed for this.  
+
+# Build and installation instructions
+
+# Pre-requisites (Dependencies)
+
+(a) Netbeans 8.2 and above
+
+(b) ant tool version 1.9.10
+
+(c) GP tool version 0.2 for interfacing with card reader
+
+(d) Only necessary binary content, usable with ant-javacard. https://github.com/JavaCardSpot-dev/OpenEMV/tree/master/libs-sdks
+
+# Building cap file
+
+(a) ant -f jcbuild.xml build    - It will create .cap file from .jar file taking parameters from jcbuild.xml
+
+# Installing cap file
+
+(a) gp -list -d  // To view the list of applets on javacard
  
+(b) gp -install OpenEMV.cap -d   // To install a java applet on card
 
 # Usage
 
@@ -78,7 +78,7 @@ There are two ways to use this project.
 
 (a) Use pyApduTool to Download this OpenEMV CAP file to card and install it, select the applet and send APDU to card.
 
-(b) Project can be build in Netbeans as well in JCIDE project directly to view and edit the source code.
+(b) Project can be build in Netbeans 8.2 using JDK 1.8 as well in JCIDE .
 
 # Testing
 
@@ -91,10 +91,6 @@ APDU packet for Testing Response from Applet
 response = 6F258407A0000000048002A51A500E536563757265436F6465204175748701005F2D046E6C656E
 
 ***********************************************************************************************
-
-# Building
-
-Using [JCIDE](http://javacardos.com/javacardforum/viewtopic.php?f=26&t=43?ws=github&prj=OpenEMV) open this project,  Click "Buid All Packages(F7)" to build the source code.
 
 # License 
 
