@@ -92,7 +92,7 @@ public class EMVProtocolState implements EMVConstants {
 		return lastOnlineATC[0];
 	}
 	
-	public EMVProtocolState(SimpleApplet x){
+	public EMVProtocolState(SimpleEMVApplet x){
 		theApplet = x;
 		volatileState = JCSystem.makeTransientByteArray((short) 3, JCSystem.CLEAR_ON_DESELECT);
 		cvr = JCSystem.makeTransientByteArray((short) 2, JCSystem.CLEAR_ON_DESELECT);
