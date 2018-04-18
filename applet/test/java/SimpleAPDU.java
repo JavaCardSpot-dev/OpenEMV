@@ -60,6 +60,45 @@ public class SimpleAPDU
         }
     }
 
+    // This checks whether on a Physical Card the ATC counter increases  for every transaction
+    // should be called only while using on a physical card
+    // Will throw assertion fail in simulated mode
+    public void checkATC() throws Exception {    
+    
+        byte []session1 = new byte[128];
+        byte []session2 = new byte[128];
+        CommandAPDU cmdapdu ;
+        // CardManager abstracts from real or simulated card, provide with applet AID
+        final CardManager cardMngr = new CardManager(true, APPLET_AID_BYTE);  
+       
+        // Get default configuration for subsequent connection to card (personalized later)
+        final RunConfig runCfg = RunConfig.getDefaultConfig();
+
+        // A) If running on physical card
+        runCfg.setTestCardType(RunConfig.CARD_TYPE.PHYSICAL); // Use real card
+
+        // Connect to first available card
+        // NOTE: selects target applet based on AID specified in CardManager constructor
+        System.out.print("Connecting to card...");
+        if (!cardMngr.Connect(runCfg)) {
+            System.out.println(" Failed.");
+            
+        }
+        System.out.println(" Done.");
+
+        // Transmit single APDU
+        cmdapdu = new CommandAPDU(0x00,0xCA,0x9F,0x13);
+         ResponseAPDU response = cardMngr.transmit(cmdapdu);
+          Assert.assertEquals(36864,response.getSW() );
+         System.arraycopy(response.getData(), 0, session1, 0, 5);
+         
+         cmdapdu = new CommandAPDU(0x00,0xCA,0x9F,0x13);
+         response = cardMngr.transmit(cmdapdu);
+          Assert.assertEquals(36864,response.getSW() );
+         System.arraycopy(response.getData(), 0, session2, 0, 5);
+         cardMngr.Disconnect(true);
+        Assert.assertNotSame(session1, session2);
+    }
     public void setCertificate() throws Exception {
     
         
