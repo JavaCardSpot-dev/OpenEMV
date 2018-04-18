@@ -36,8 +36,10 @@ public class EMVProtocolState implements EMVConstants {
 	/* Reference back to the applet that uses this EMVCrypto object */
 	private final SimpleEMVApplet theApplet;
 	private short atc;
-	private short lastOnlineATC ;
-       	/** 
+	private short []lastOnlineATC = new short[1] ;
+       // byte[]OnlineAtc = new byte[2] ;
+        	
+	/** 
 	 * Volatile protocol state; records if CVM has been performed, and if ACs
 	 * have been generated
 	 */
@@ -81,16 +83,16 @@ public class EMVProtocolState implements EMVConstants {
 		//if (atc == MAX) { BLOCK THIS CARD!! }, but we ignore security here
                
 		atc = (short)(atc+1);
-                lastOnlineATC = atc;
+                lastOnlineATC[0] = atc;
                
 	}
 	
 	public short getLastOnlineATC() {
             
-		return lastOnlineATC;
+		return lastOnlineATC[0];
 	}
 	
-	public EMVProtocolState(SimpleEMVApplet x){
+	public EMVProtocolState(SimpleApplet x){
 		theApplet = x;
 		volatileState = JCSystem.makeTransientByteArray((short) 3, JCSystem.CLEAR_ON_DESELECT);
 		cvr = JCSystem.makeTransientByteArray((short) 2, JCSystem.CLEAR_ON_DESELECT);
@@ -111,7 +113,7 @@ public class EMVProtocolState implements EMVConstants {
 	 * Sets the last online ATC equal to the current ATC
 	 */
 	public void onlineSessionCompleted(){
-		lastOnlineATC =  atc;
+		lastOnlineATC[0] =  atc;
 	}
 
 	/* Returns the 4 byte CVR (Card Verification Results).
