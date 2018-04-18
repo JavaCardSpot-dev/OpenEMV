@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javacard.framework.JCSystem;
 import javax.xml.bind.DatatypeConverter;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 
 
