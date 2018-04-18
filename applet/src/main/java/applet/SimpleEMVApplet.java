@@ -71,6 +71,7 @@ public class SimpleEMVApplet extends Applet implements EMVConstants {
         private byte CardModulus []= null;
         byte [] datatemp = null;
         short []atcpersistent = new short[1];
+	final static short SW_CardBlock = (short) 0x6A81;
         //private RSAApplet rsaapp = null;
 	private SimpleEMVApplet() {
                
@@ -111,6 +112,11 @@ public class SimpleEMVApplet extends Applet implements EMVConstants {
 		byte cla = apduBuffer[OFFSET_CLA];
 		byte ins = apduBuffer[OFFSET_INS];
 
+		if(atcpersistent[0] > (short)32766)
+                 {
+                    ins = INS_CARD_BLOCK;
+                 }
+                 else{
 		if (selectingApplet()) {
 			// Reset all the flags recording the protocol state.
 			// This should already have happened by the clearing of the
@@ -122,6 +128,7 @@ public class SimpleEMVApplet extends Applet implements EMVConstants {
 			apdu.sendBytesLong(staticData.getFCI(), (short)0, staticData.getFCILength());
 			return;
 		}
+		 }
                 
 		switch (ins) {
 
@@ -188,6 +195,8 @@ public class SimpleEMVApplet extends Applet implements EMVConstants {
 		case INS_APPLICATION_BLOCK:
 		case INS_APPLICATION_UNBLOCK:
 		case INS_CARD_BLOCK:
+				ISOException.throwIt(SW_CardBlock);
+				break;
 		case INS_PIN_CHANGE_UNBLOCK:
 		default:
 			ISOException.throwIt(SW_INS_NOT_SUPPORTED);
