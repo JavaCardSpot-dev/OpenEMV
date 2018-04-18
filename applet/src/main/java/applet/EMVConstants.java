@@ -39,17 +39,21 @@ public interface EMVConstants extends ISO7816 {
     byte INS_VERIFY = (byte) 0x20;
     byte INS_GET_CHALLENGE = (byte) 0x84 ;
     byte INS_READ_RECORD = (byte) 0xB2;
+    byte INS_MEMORY = (byte) 0xAA;
 
     // Already defined in ISO7816.java:
     //  INS_SELECT = A4
     //  INS_EXTERNAL_AUTHENTICATE = 82
 
+    // pre-issuance commands
+    byte INS_ISSUER_SENDPUB = (byte)0xD0;
+    byte INS_CARD_SIGNATURE = (byte)0xD1;
     // post-issuance commands
     byte INS_APPLICATION_BLOCK = (byte)0x1E;
     byte INS_APPLICATION_UNBLOCK = (byte)0x18;
     byte INS_CARD_BLOCK = (byte)0x16;
     byte INS_PIN_CHANGE_UNBLOCK = (byte)0x24;
-
+    byte INS_GET_SIGNATURE = (byte)0xD2;
     // status words
     short SW_ISSUER_AUTHENTICATION_FAILED = (short)0x6300;
 
@@ -63,6 +67,7 @@ public interface EMVConstants extends ISO7816 {
     byte   TC_CODE = (byte)0x40;
     byte  AAC_CODE = (byte)0x00;
     byte  RFU_CODE = (byte)0xC0;
+    byte  SIMULATED_MODE = (byte)0x11;
     
     /* types of AC  */
     byte NONE = (byte)0x00;
