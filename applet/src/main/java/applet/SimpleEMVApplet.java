@@ -115,8 +115,8 @@ public class SimpleEMVApplet extends Applet implements EMVConstants {
 			// Reset all the flags recording the protocol state.
 			// This should already have happened by the clearing of the
 			// transient array used for them.
-			protocolState.startNewSession(atcpersistent[1]);
-			
+			protocolState.startNewSession(atcpersistent[0]);
+			atcpersistent[0]= protocolState.getATC();
 			apdu.setOutgoing();
 			apdu.setOutgoingLength(staticData.getFCILength());
 			apdu.sendBytesLong(staticData.getFCI(), (short)0, staticData.getFCILength());
