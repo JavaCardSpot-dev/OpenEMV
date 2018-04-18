@@ -18,7 +18,6 @@
 
 package applet;
 
-import org.junit.Assert;
 import javacard.framework.APDU;
 import javacard.framework.Applet;
 import javacard.framework.ISOException;
