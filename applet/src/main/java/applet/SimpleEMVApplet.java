@@ -223,8 +223,16 @@ public class SimpleEMVApplet extends Applet implements EMVConstants {
                  Util.arrayCopyNonAtomic(apduBuffer , (short) 5,temp , (short)0, (short)128);   
                  encryptCipher.init(CardPrivkey, javacardx.crypto.Cipher.MODE_ENCRYPT);
                  encryptCipher.doFinal(temp, (short) 0, (short) 128, temp, (short) 0);
-                  Util.arrayCopyNonAtomic(temp , (short) 0,apduBuffer , (short)0, (short)128);   
-                 apdu.setOutgoingAndSend((short) 0, (short) 128);
+                 if (pin.check(temp, (short) 0, (byte) 2)) 
+                    {
+			protocolState.setCVMPerformed(ENCRYPTED_PIN);
+			apdu.setOutgoingAndSend((short) 0, (short) 0); // return 9000
+                    } 
+                    else 
+                    {
+			ISOException.throwIt((short) ((short) (0x63C0) + (short) pin.getTriesRemaining()));
+                    }
+                  
                 }
 
 		/* EP: For the code below to be correct, digits in the PIN object need
@@ -242,6 +250,7 @@ public class SimpleEMVApplet extends Applet implements EMVConstants {
 		}
                 }
 	}
+
 
 	/*
 	 * The GET CHALLENGE command generates an 8 byte unpredictable number.
