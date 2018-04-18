@@ -107,7 +107,7 @@ public class SimpleAPDU
        // runCfg.setTestCardType(RunConfig.CARD_TYPE.PHYSICAL); // Use real card
 
         // B) If running in the simulator 
-        runCfg.setAppletToSimulate(SimpleApplet.class); // main class of applet to simulate
+        runCfg.setAppletToSimulate(SimpleEMVApplet.class); // main class of applet to simulate
         runCfg.setTestCardType(RunConfig.CARD_TYPE.JCARDSIMLOCAL); // Use local simulator
 
         // Connect to first available card
@@ -135,7 +135,7 @@ public class SimpleAPDU
         //runCfg.setTestCardType(RunConfig.CARD_TYPE.PHYSICAL); // Use real card
         byte []temp = null; 
         temp = JCSystem.makeTransientByteArray((short)128, JCSystem.CLEAR_ON_DESELECT);
-        runCfg.setAppletToSimulate(SimpleApplet.class); 
+        runCfg.setAppletToSimulate(SimpleEMVApplet.class); 
         runCfg.setTestCardType(RunConfig.CARD_TYPE.JCARDSIMLOCAL); // Use local simulator
 
         // Connect to first available card
