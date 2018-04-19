@@ -38,12 +38,17 @@ dependencies {
 }
 
 sourceSets {  
-
-    test {
-        test {
-            srcDir 'java/test'
+    main {
+        java {
+            srcDir 'src/main/java'
         }
     }
+
+    test {
+        java {
+            srcDir 'test/java'
+        }       
+    }  
 }
 
 test {
