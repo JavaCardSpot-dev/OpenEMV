@@ -46,7 +46,8 @@ public class SimpleAPDU
      *
      * @param args
      */
-    public static void main(String[] args) {
+    @Test
+    public static void main() {
         try {
             
             SimpleAPDU main = new SimpleAPDU();
@@ -63,6 +64,7 @@ public class SimpleAPDU
     // This checks whether on a Physical Card the ATC counter increases  for every transaction
     // should be called only while using on a physical card
     // Will throw assertion fail in simulated mode
+    
     public void checkATC() throws Exception {    
     
         byte []session1 = new byte[128];
@@ -94,10 +96,10 @@ public class SimpleAPDU
          
          cmdapdu = new CommandAPDU(0x00,0xCA,0x9F,0x13);
          response = cardMngr.transmit(cmdapdu);
-          Assert.assertEquals(36864,response.getSW() );
+         Assert.assertEquals(36864,response.getSW() );
          System.arraycopy(response.getData(), 0, session2, 0, 5);
          cardMngr.Disconnect(true);
-        Assert.assertNotSame(session1, session2);
+         Assert.assertNotSame(session1, session2);
     }
     public void setCertificate() throws Exception {
     
