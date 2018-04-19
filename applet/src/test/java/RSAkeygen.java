@@ -98,8 +98,11 @@ public class RSAkeygen {
     { 
             System.out.println("Inside encrypt");
             A.setModulus(modulus, (short) 0, keyLength);
+            System.out.println("Setting exponent");
             A.setExponent(publicexp,(short) 0 , (short) 3);
+            System.out.println("Initialize cipher");
             encryptCipher.init(A, Cipher.MODE_ENCRYPT);
+            System.out.println("do final");
             encryptCipher.doFinal(data, (short) 0, (short) 128, ciphertext, (short) 0);
             System.out.println(" data = "+ Arrays.toString(data));
             System.out.println(" ciphertext = "+ Arrays.toString(ciphertext));
