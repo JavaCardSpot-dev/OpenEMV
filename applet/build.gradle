@@ -65,7 +65,23 @@ final def JC304 = libsSdk + '/jc304_kit'
 final def JC305 = libsSdk + '/jc305u1_kit'
 
 // Which JavaCard SDK to use - select
-final def JC_SELECTED = JC304
+//final def JC_SELECTED = JC304
+
+// Which JavaCard SDK can be used
+final def JC_ENABLED = [
+    JC221, JC222, JC303, JC304, JC305
+]
+
+// Which JavaCard SDK to use by default
+def JC_SELECTED = JC221
+
+// Check if user wants to compile with a specific enabled JavaCard SDK
+final def JCSDK = System.getenv('JCSDK')
+if (JCSDK in JC_ENABLED) {
+    JC_SELECTED = JCSDK
+} else if (JCSDK) {
+    throw new InvalidUserDataException("JCSDK environment variable is set to an SDK not available for this project")
+}
 
 javacard {
 
