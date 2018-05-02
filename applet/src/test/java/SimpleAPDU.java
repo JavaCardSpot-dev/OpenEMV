@@ -18,7 +18,7 @@ import javacard.framework.JCSystem;
 import javax.xml.bind.DatatypeConverter;
 import junit.framework.Assert;
 import org.junit.Assert;
-import org.testing.annotations.*;
+import org.testng.annotations.*;
 
 
 /**
