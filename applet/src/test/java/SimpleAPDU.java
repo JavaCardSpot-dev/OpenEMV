@@ -112,11 +112,11 @@ public class SimpleAPDU
        
         startTime = System.currentTimeMillis();
         if(sim_mode){
-            demoGetRandomDataCommand(responsedata,new CommandAPDU(0x00,0xD0,0x11,0x11));
+            sendAPDUpacket(responsedata,new CommandAPDU(0x00,0xD0,0x11,0x11));
         }
         else
         {
-            demoGetRandomDataCommand(responsedata,new CommandAPDU(0x00,0xD0,0x00,0x00));
+            sendAPDUpacket(responsedata,new CommandAPDU(0x00,0xD0,0x00,0x00));
         }
        
         stopTime = System.currentTimeMillis();
@@ -135,14 +135,14 @@ public class SimpleAPDU
         System.out.println("Sig :  " + DatatypeConverter.printHexBinary(sig));
         
         startTime = System.currentTimeMillis();
-        demoGetRandomDataCommand(responsedata,new CommandAPDU(0x00,0xD1,0x00,0x00,sig)); // only tests whethersame data signature is returned
+        sendAPDUpacket(responsedata,new CommandAPDU(0x00,0xD1,0x00,0x00,sig)); // only tests whethersame data signature is returned
         stopTime = System.currentTimeMillis();
         System.out.println("Time D1: " + (stopTime - startTime));    
         
     }
     
-    //Sends Hello packet 
-    public void demoGetRandomDataCommand(byte[] responsedata, CommandAPDU cmdAPDU) throws Exception {
+    //Sends APDU packets
+    public void sendAPDUpacket(byte[] responsedata, CommandAPDU cmdAPDU) throws Exception {
                 
         // CardManager abstracts from real or simulated card, provide with applet AID
         final CardManager cardMngr = new CardManager(true, APPLET_AID_BYTE);  
