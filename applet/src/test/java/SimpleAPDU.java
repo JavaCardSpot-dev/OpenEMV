@@ -42,7 +42,7 @@ public class SimpleAPDU
      * @param args
      */
     @Test
-    public static void main(String[] args) {
+    public static void main() {
         try {
             
             SimpleAPDU main = new SimpleAPDU();
