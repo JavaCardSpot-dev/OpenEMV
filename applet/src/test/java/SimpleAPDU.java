@@ -1,6 +1,6 @@
 package applet;
 
-import applet.SimpleEMVApplet;
+import applets.SimpleEMVApplet;
 import cardTools.CardManager;
 import cardTools.RunConfig;
 import cardTools.Util;
@@ -16,16 +16,14 @@ import java.util.HashSet;
 import java.util.Set;
 import javacard.framework.JCSystem;
 import javax.xml.bind.DatatypeConverter;
+import junit.framework.Assert;
 import org.junit.Assert;
-import org.testng.annotations.*;
-
+import org.testing.annotations.*;
 
 
 /**
  * Test class.
  * Note: If simulator cannot be started try adding "-noverify" JVM parameter
- *
- * @author Petr Svenda (petrs), Dusan Klinec (ph4r05)
  * The program implements encrypted PIN transfer for EMV protocol.
  * It Runs in two modes, either it can emulate an issuer and then create signature for initialising the card or
  * it can run in simulated mode for which card RSA public and private key is hard coded in Applet
@@ -36,11 +34,7 @@ public class SimpleAPDU
     private static byte APPLET_AID_BYTE[] = Util.hexStringToByteArray(APPLET_AID);
     private  RSAkeygen r = new RSAkeygen();
     // for Simulated mode sim_mode is true
-    private static boolean sim_mode=true;
-    private byte pkey [] = { 
-                            (byte) 0x01, (byte) 0x02, (byte) 0x03
-                            };
-   
+    private static boolean sim_mode=true;   
 
     /**
      * Main entry point.
@@ -48,13 +42,14 @@ public class SimpleAPDU
      * @param args
      */
     @Test
-    public static void main() {
+    public static void main(String[] args) {
         try {
             
             SimpleAPDU main = new SimpleAPDU();
+            //main.checkATC();  
             if(!sim_mode)
             {
-            main.setCertificate();
+            main.setCertificate();              
             }
             main.POS_Get_Card_Certificate();       
         } catch (Exception ex) {
@@ -62,10 +57,10 @@ public class SimpleAPDU
         }
     }
 
+    
     // This checks whether on a Physical Card the ATC counter increases  for every transaction
     // should be called only while using on a physical card
     // Will throw assertion fail in simulated mode
-    
     public void checkATC() throws Exception {    
     
         byte []session1 = new byte[128];
@@ -84,34 +79,38 @@ public class SimpleAPDU
         // NOTE: selects target applet based on AID specified in CardManager constructor
         System.out.print("Connecting to card...");
         if (!cardMngr.Connect(runCfg)) {
-            System.out.println(" Failed.");
-            
+            System.out.println(" Failed.");            
         }
+        
         System.out.println(" Done.");
-
         // Transmit single APDU
         cmdapdu = new CommandAPDU(0x00,0xCA,0x9F,0x13);
-         ResponseAPDU response = cardMngr.transmit(cmdapdu);
-          Assert.assertEquals(36864,response.getSW() );
-         System.arraycopy(response.getData(), 0, session1, 0, 5);
+        ResponseAPDU response = cardMngr.transmit(cmdapdu);
+        
+        Assert.assertEquals(36864,response.getSW() );
+          
+        System.arraycopy(response.getData(), 0, session1, 0, 5);
          
-         cmdapdu = new CommandAPDU(0x00,0xCA,0x9F,0x13);
-         response = cardMngr.transmit(cmdapdu);
-         Assert.assertEquals(36864,response.getSW() );
-         System.arraycopy(response.getData(), 0, session2, 0, 5);
-         cardMngr.Disconnect(true);
-         Assert.assertNotSame(session1, session2);
+        cmdapdu = new CommandAPDU(0x00,0xCA,0x9F,0x13);
+        response = cardMngr.transmit(cmdapdu);
+        Assert.assertEquals(36864,response.getSW() );
+        System.arraycopy(response.getData(), 0, session2, 0, 5);
+        cardMngr.Disconnect(true);          
+        Assert.assertNotSame(session1, session2);
     }
+    
+    //Sets the one time certificate signed by the issuing authority
     public void setCertificate() throws Exception {
     
-        
+        long startTime;
+        long stopTime;
         byte []responsedata = new byte[128];
         byte []sig = new byte[128];
         byte []hashpub = new byte[32]; 
         byte []temp = null; 
         temp = JCSystem.makeTransientByteArray((short)128, JCSystem.CLEAR_ON_DESELECT);
        
-        
+        startTime = System.currentTimeMillis();
         if(sim_mode){
             demoGetRandomDataCommand(responsedata,new CommandAPDU(0x00,0xD0,0x11,0x11));
         }
@@ -120,6 +119,8 @@ public class SimpleAPDU
             demoGetRandomDataCommand(responsedata,new CommandAPDU(0x00,0xD0,0x00,0x00));
         }
        
+        stopTime = System.currentTimeMillis();
+        System.out.println("Time D0: " + (stopTime - startTime));    
         System.out.println("response :" + responsedata);
    
         MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
@@ -132,11 +133,15 @@ public class SimpleAPDU
         r.getplaintext(sig, (short)0, (short)128);
               
         System.out.println("Sig :  " + DatatypeConverter.printHexBinary(sig));
-        demoGetRandomDataCommand(responsedata,new CommandAPDU(0x00,0xD1,0x00,0x00,sig)); // only tests whethersame data signature is returned
         
+        startTime = System.currentTimeMillis();
+        demoGetRandomDataCommand(responsedata,new CommandAPDU(0x00,0xD1,0x00,0x00,sig)); // only tests whethersame data signature is returned
+        stopTime = System.currentTimeMillis();
+        System.out.println("Time D1: " + (stopTime - startTime));    
         
     }
     
+    //Sends Hello packet 
     public void demoGetRandomDataCommand(byte[] responsedata, CommandAPDU cmdAPDU) throws Exception {
                 
         // CardManager abstracts from real or simulated card, provide with applet AID
@@ -146,7 +151,7 @@ public class SimpleAPDU
         final RunConfig runCfg = RunConfig.getDefaultConfig();
 
         // A) If running on physical card
-       // runCfg.setTestCardType(RunConfig.CARD_TYPE.PHYSICAL); // Use real card
+        //runCfg.setTestCardType(RunConfig.CARD_TYPE.PHYSICAL); // Use real card
 
         // B) If running in the simulator 
         runCfg.setAppletToSimulate(SimpleEMVApplet.class); // main class of applet to simulate
@@ -156,21 +161,25 @@ public class SimpleAPDU
         // NOTE: selects target applet based on AID specified in CardManager constructor
         System.out.print("Connecting to card...");
         if (!cardMngr.Connect(runCfg)) {
-            System.out.println(" Failed.");
-            
+            System.out.println(" Failed.");            
         }
-        System.out.println(" Done.");
-
-        // Transmit single APDU
-         ResponseAPDU response = cardMngr.transmit(cmdAPDU);
-          Assert.assertEquals(36864,response.getSW() );
-         System.arraycopy(response.getBytes(), 0, responsedata, 0, 128);
-         cardMngr.Disconnect(true);
         
+        System.out.println(" Done.");
+        
+        // Transmit single APDU
+        ResponseAPDU response = cardMngr.transmit(cmdAPDU); 
+          
+        Assert.assertEquals(36864,response.getSW() );
+        System.arraycopy(response.getBytes(), 0, responsedata, 0, 128);
+        cardMngr.Disconnect(true);        
     }
 
+    // Functions as Point of Sale and veifies the card certificate
+    //Time calculations added
     public void POS_Get_Card_Certificate() throws Exception {
         
+        long startTime;
+        long stopTime;
         RSACard cardrsa = new RSACard();
         final CardManager cardMngr = new CardManager(true, APPLET_AID_BYTE);
         final RunConfig runCfg = RunConfig.getDefaultConfig();
@@ -187,13 +196,16 @@ public class SimpleAPDU
         }
         System.out.println(" Done.");
         ResponseAPDU response;
+        startTime=System.currentTimeMillis();
+        
         if(sim_mode){
          response = cardMngr.transmit(new CommandAPDU(0x00,0xD2,0x11,0x11));
         }
         else {
          response = cardMngr.transmit(new CommandAPDU(0x00,0xD2,0x00,0x00));
         }
-            
+        stopTime = System.currentTimeMillis();
+        System.out.println("Time D2: " + (stopTime - startTime));    
         System.out.println("Response D2:" + DatatypeConverter.printHexBinary( response.getData()));
         
        if(cardVerify(response.getData()))
@@ -212,13 +224,16 @@ public class SimpleAPDU
            cardrsa.encrypt();
            cardrsa.getciphertext(temp, (short)0, (short)128);
            
+           startTime = System.currentTimeMillis();
            if(sim_mode){
                response = cardMngr.transmit(new CommandAPDU(0x00,0x20,0x11,0x88,temp));
            }
            else{
            response = cardMngr.transmit(new CommandAPDU(0x00,0x20,0x00,0x88,temp));
            }
-             Assert.assertEquals(36864,response.getSW() );
+           stopTime = System.currentTimeMillis();
+           System.out.println("Time 20: " + (stopTime - startTime));    
+           Assert.assertEquals(36864,response.getSW() );
            System.out.println("response verify PIN :" + DatatypeConverter.printHexBinary( response.getData()));
            
        }
@@ -226,6 +241,8 @@ public class SimpleAPDU
            System.out.println("Signature Not Verified");
     }    
     
+    
+    //Verifies the calculated hash values received from card applet and recalculated at POS
     public boolean cardVerify(byte[] response ) throws Exception {
         
         //byte []card_exponent = new byte[3];
@@ -235,8 +252,7 @@ public class SimpleAPDU
          byte []calculated_hash = new byte[128]; 
          boolean stat = false;
          byte []temp = null; 
-         temp = JCSystem.makeTransientByteArray((short)128, JCSystem.CLEAR_ON_DESELECT);
-        
+         temp = JCSystem.makeTransientByteArray((short)128, JCSystem.CLEAR_ON_DESELECT);   
         
         // System.arraycopy(response, 0, card_exponent, 0, (short)3);
         System.arraycopy(response, 0, card_modulus, 0, (short)128); 
@@ -253,12 +269,12 @@ public class SimpleAPDU
         System.out.println("Calculated Hash :  " + DatatypeConverter.printHexBinary(calculated_hash));
         System.out.println("DEcrypeted HAsh :  " + DatatypeConverter.printHexBinary(decrypted_hash));
         stat = (CompareHash(calculated_hash,decrypted_hash,32));
-        Assert.assertEquals(true, stat);
+        Assert.assertEquals(true, stat); // Card VErified
         return stat;
     }    
-    public boolean CompareHash(byte [] calculated_hash, byte [] decrypted_hash,int length ) throws Exception {
-        
-     
+    
+    //Compares the hash received from card with the recomputed hash
+    public boolean CompareHash(byte [] calculated_hash, byte [] decrypted_hash,int length ) throws Exception {     
         
         for(int i=0;i<32;i++)
         {
@@ -268,3 +284,4 @@ public class SimpleAPDU
         return true;
     }
 }
+
