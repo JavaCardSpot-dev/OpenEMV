@@ -1,6 +1,6 @@
 package applet;
 
-import applets.SimpleEMVApplet;
+import applet.SimpleEMVApplet;
 import cardTools.CardManager;
 import cardTools.RunConfig;
 import cardTools.Util;
@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.Set;
 import javacard.framework.JCSystem;
 import javax.xml.bind.DatatypeConverter;
-import junit.framework.Assert;
 import org.junit.Assert;
 import org.testng.annotations.*;
 
